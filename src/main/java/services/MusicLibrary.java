@@ -3,9 +3,19 @@ package services;
 import java.util.ArrayList;
 import models.MusicItem;
 
+
+
+/**
+ * This class defines the components and the features
+ * of the library. It is used to manage MusicItems.
+ *
+ * @author Josué Mongan
+ * @since 2025-03-06
+ *
+ */
 public final class MusicLibrary {
 
-    private ArrayList<MusicItem> items;
+    private ArrayList<MusicItem> items;     // The data structure to contain all MusicItem elements
     private MusicItem playing;              // Keeps track of the MusicItem currently playing
 
 //    public MusicLibrary(ArrayList<MusicItem> items) {
@@ -52,12 +62,22 @@ public final class MusicLibrary {
     }
 
 
+    /**
+     * This method lists all the items contained in the library
+     */
     public void listAllItems() {
         for (MusicItem music : items) {
             System.out.println(music.toString());
         }
     }
 
+
+    /**
+     * This function plays a MusicItem from the library
+     * based on the id.
+     *
+     * @param id specifies the id of the item to remove
+     */
     public void playItem( int id ) {
         MusicItem toPlay = findItem(id);
 
@@ -67,18 +87,30 @@ public final class MusicLibrary {
         }
     }
 
+
+    /**
+     * This function pauses the MusicItem that is currently playing
+     */
     public void pauseItem() {
         if(playing != null) {
             playing.pause();
         }
     }
 
+
+    /**
+     * This function stops the MusicItem that is currently playing
+     */
     public void stopItem() {
         if(playing != null) {
             playing.stop();
         }
     }
 
+
+    /**
+     * This method clears all the items in the library
+     */
     public void clearAllItems() {
         items.clear();
     }
