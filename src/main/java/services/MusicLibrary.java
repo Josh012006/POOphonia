@@ -1,7 +1,12 @@
 package services;
 
 import java.util.ArrayList;
+
+
 import models.MusicItem;
+import models.Song;
+import models.Album;
+import models.Podcast;
 import ui.Message;
 
 
@@ -29,11 +34,33 @@ public final class MusicLibrary {
      */
     public MusicItem findItem( int id ) {
         for(MusicItem item : items) {
-            if(item.id == id) {
+            if(item.getId() == id) {
                 return item;
             }
         }
         return null;    // Returns null if no such item is found
+    }
+
+
+    /**
+     * This function checks if the item specified is already
+     * present in the library under a different id.
+     *
+     * @param item is the item to check
+     * @return true if there is already such an item existing in the library
+     */
+    public boolean existingItem( MusicItem item) {
+        for(MusicItem music : items) {
+
+            MusicItem tempCopy = music.clone();
+            tempCopy.setId(item.getId());       // Giving the same id in other to compare the two independently of the id
+
+            if(tempCopy.toString().equals(item.toString())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 
@@ -57,7 +84,7 @@ public final class MusicLibrary {
         MusicItem toRemove = findItem(id);
 
         if(toRemove != null) {
-            items.remove(id);
+            items.remove(toRemove);
         }
     }
 

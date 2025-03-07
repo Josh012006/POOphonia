@@ -3,6 +3,9 @@ package services;
 import models.MusicItemFactory;
 import ui.Message;
 import models.MusicItem;
+import models.Song;
+import models.Album;
+import models.Podcast;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -59,6 +62,153 @@ public final class CommandProcessor {
         }
 
         workingLibrary.save(file);
+
+    }
+
+
+    /**
+     * This method adds a new item to the library while managing
+     * all kind of exceptions and cases.
+     *
+     * @param item specifies the attributes of the new item to add
+     */
+    private static void add(String item) {
+        String[] parameters = item.split(",");
+
+        if(parameters.length < 7) {
+            Message.send("Invalid ADD command: ADD " + item);
+        }
+        else if(parameters.length > 7) {
+            Message.send("Wrong number of elements: ADD " + item);
+        }
+        else {
+            String itemType = parameters[0];
+
+            if(!itemType.equals("song") && !itemType.equals("album") && !itemType.equals("podcast")) {
+                Message.send("Wrong music item: ADD " + item);
+            }
+            else {
+                String id = parameters[1];
+                String releaseYear = parameters[3];
+
+                try {
+                    int itemId = Integer.parseInt(id); // Verifying it is a number
+
+                    if(itemId < 1) {
+                        Message.send("Invalid music ID: ADD " + item);
+                    }
+                    else if(workingLibrary.findItem(itemId) != null) {
+                        Message.send("ADD " + item + " failed; ID already used.");
+                    }
+                    else {
+                        try {
+                            int itemReleaseYear = Integer.parseInt(releaseYear); // Verifying it is a number
+
+                            if(itemReleaseYear < 1850 || itemReleaseYear > 2025) {
+                                Message.send("Invalid release year: ADD " + item);
+                            }
+                            else {
+
+                                // Verifications specific to the type of music item
+                                try {
+                                    // An initialisation of the item to add
+                                    MusicItem toAdd = null;
+
+                                    if("song".equals(itemType)) {
+                                        int duration = Integer.parseInt(parameters[6]);
+
+                                        if(duration < 1 || duration > 36000) {
+                                            Message.send("Invalid duration: ADD " + item);
+                                            return;
+                                        }
+
+                                        toAdd = new Song(itemId, parameters[2], itemReleaseYear,
+                                                        parameters[4], parameters[5], duration);
+
+                                    }
+                                    else if("album".equals(itemType)) {
+                                        int numOfTracks = Integer.parseInt(parameters[6]);
+
+                                        if(numOfTracks < 1 || numOfTracks > 100) {
+                                            Message.send("Invalid number of tracks: ADD " + item);
+                                            return;
+                                        }
+
+                                        toAdd = new Album(itemId, parameters[2], itemReleaseYear,
+                                                parameters[4], parameters[5], numOfTracks);
+                                    }
+                                    else {
+                                        int numOfPodcasts = Integer.parseInt(parameters[6]);
+
+                                        if(numOfPodcasts < 1 || numOfPodcasts > 500) {
+                                            Message.send("Invalid episode number: ADD " + item);
+                                            return;
+                                        }
+
+                                        toAdd = new Podcast(itemId, parameters[2], itemReleaseYear,
+                                                parameters[4], parameters[5], numOfPodcasts);
+                                    }
+
+
+                                    if(workingLibrary.existingItem(toAdd)) {
+                                        Message.send("ADD " + item + " failed; item already in library.");
+                                        return;
+                                    }
+
+                                    workingLibrary.addItem(toAdd);          // Adding the new musical item
+                                    workingLibrary.save("");     // Saving the library in the default file
+
+                                    Message.send(toAdd.toString() + " added to the library successfully.");
+
+                                } catch(Exception e) {
+                                    Message.send("ADD item " + item + " failed; no such item.");
+                                }
+                            }
+
+                        } catch (NumberFormatException e) {
+                            Message.send("Invalid release year: ADD " + item);
+                        }
+                    }
+
+                } catch (NumberFormatException e) {
+                    Message.send("Invalid music ID: ADD " + item);
+                }
+            }
+        }
+
+    }
+
+
+    /**
+     * This method takes an id and removes the music item with the
+     * corresponding id from the library.
+     *
+     * @param id specifies the id of the item to remove
+     */
+    public static void remove(String id) {
+
+        if(id.isEmpty()) {
+            Message.send("Invalid REMOVE command: REMOVE " + id);
+        }
+        else {
+            try {
+                int itemId =  Integer.parseInt(id);
+
+                MusicItem toRemove = MusicItem.findItem(itemId);
+
+                if(toRemove == null) {
+                    Message.send("REMOVE item " + id + " failed; no such item.");
+                }
+                else {
+                    workingLibrary.removeItem(itemId);
+
+                    Message.send("Removed " + toRemove.toString() + " successfully.");
+                }
+
+            } catch (NumberFormatException e) {
+                Message.send("Invalid ID for REMOVE command: " + id);
+            }
+        }
 
     }
 
@@ -204,6 +354,8 @@ public final class CommandProcessor {
                                 break;
                             case "LIST":
                                 list(parameters);
+                                break;
+                            case "EXIT":
                                 break;
                             default:
                                 Message.send( "Unknown command " + line );
