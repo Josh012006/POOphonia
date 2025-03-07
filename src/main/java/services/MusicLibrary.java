@@ -115,4 +115,15 @@ public final class MusicLibrary {
         items.clear();
     }
 
+
+    /**
+     * This method saves the items of the library in a CSV file. If libraryName is empty
+     * the default file POOphonia.csv is used.
+     *
+     * @param libraryName specifies the name of the CSV file we want to save the items to
+     */
+    public void save(String libraryName) {
+        MusicLibraryFileHandler.saveLibrary(items, libraryName);
+    }
+
 }
