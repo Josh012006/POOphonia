@@ -63,6 +63,65 @@ public final class CommandProcessor {
     }
 
 
+
+    private static void pause(String parameters) {
+
+        // Verifying if the command is valid
+        if(!parameters.isEmpty()) {
+            Message.send("Invalid PAUSE command: PAUSE " + parameters);
+        }
+        workingLibrary.pauseItem();
+
+    }
+
+
+    /**
+     * This method removes all the items from the library.
+     *
+     * @param parameters specifies the parameters for the command
+     */
+    private static void clear(String parameters) {
+
+        // Verifying if the command is valid
+        if(!parameters.isEmpty()) {
+            Message.send("Invalid CLEAR command: CLEAR " + parameters);
+        }
+
+        if(workingLibrary.isEmpty()) {
+            Message.send("Music library is already empty.");
+        }
+        else {
+            workingLibrary.clearAllItems();
+            Message.send("Music library has been cleared successfully.");
+        }
+
+    }
+
+
+
+    /**
+     * This method lists all the music items of the library.
+     *
+     * @param parameters specifies the parameters for the command
+     */
+    private static void list(String parameters) {
+
+        // Verifying if the command is valid
+        if(!parameters.isEmpty()) {
+            Message.send("Invalid LIST command: LIST " + parameters);
+        }
+
+        if(workingLibrary.isEmpty()) {
+            Message.send("The library is empty.");
+        }
+        else {
+            Message.send("Library:");
+            workingLibrary.listAllItems();
+        }
+
+    }
+
+
     /**
      * The method that manages the source command. It reads the file
      * and executes the commands that it contains.
@@ -109,67 +168,45 @@ public final class CommandProcessor {
 
                         String[] words = line.split(" ");
 
-                        // If there is only one word
-                        if(words.length < 2) {
-                            switch(words[0]) {
-                                case "SOURCE":
-                                    source("");
-                                    break;
-                                case "LOAD":
-                                    load("");
-                                    break;
-                                case "SAVE":
-                                    save("");
-                                    break;
-                                case "PLAY":
-                                    play("");
-                                    break;
-                                case "PAUSE":
-                                    pause();
-                                    break;
-                                case "STOP":
-                                    stop();
-                                    break;
-                                case "CLEAR":
-                                    clear();
-                                    break;
-                                case "LIST":
-                                    list();
-                                    break;
-                                default:
-                                    Message.send( "Unknown command " + line );
-                            }
-                        }
-                        else {
+                        // The information to pass as parameters to the commands' methods
+                        String parameters = String.join(" ", Arrays.copyOfRange(words, 1, words.length));
 
-                            // The information to pass as parameters to the commands' methods
-                            String parameters = String.join(" ", Arrays.copyOfRange(words, 1, words.length);
-
-                            switch(words[0]) {
-                                case "SOURCE":
-                                    source(parameters);
-                                    break;
-                                case "LOAD":
-                                    load(parameters);
-                                    break;
-                                case "SAVE":
-                                    save(parameters);
-                                    break;
-                                case "ADD":
-                                    add(parameters);
-                                    break;
-                                case "REMOVE":
-                                    remove(parameters);
-                                    break;
-                                case "SEARCH":
-                                    search(parameters);
-                                    break;
-                                case "PLAY":
-                                    play(parameters);
-                                    break;
-                                default:
-                                    Message.send( "Unknown command " + line );
-                            }
+                        switch(words[0]) {
+                            case "SOURCE":
+                                source(parameters);
+                                break;
+                            case "LOAD":
+                                load(parameters);
+                                break;
+                            case "SAVE":
+                                save(parameters);
+                                break;
+                            case "ADD":
+                                add(parameters);
+                                break;
+                            case "REMOVE":
+                                remove(parameters);
+                                break;
+                            case "SEARCH":
+                                search(parameters);
+                                break;
+                            case "PLAY":
+                                play(parameters);
+                                break;
+                            case "PAUSE":
+                                pause(parameters);
+                                break;
+                            case "STOP":
+                                stop(parameters);
+                                break;
+                            case "CLEAR":
+                                clear(parameters);
+                                break;
+                            case "LIST":
+                                list(parameters);
+                                break;
+                            default:
+                                Message.send( "Unknown command " + line );
                         }
 
                     }

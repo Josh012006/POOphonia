@@ -2,7 +2,7 @@ package services;
 
 import java.util.ArrayList;
 import models.MusicItem;
-
+import ui.Message;
 
 
 /**
@@ -16,7 +16,7 @@ import models.MusicItem;
 public final class MusicLibrary {
 
     private ArrayList<MusicItem> items;     // The data structure to contain all MusicItem elements
-    private MusicItem playing;              // Keeps track of the MusicItem currently playing
+    private MusicItem playing = null;              // Keeps track of the MusicItem currently playing
 
 //    public MusicLibrary(ArrayList<MusicItem> items) {
 //
@@ -48,7 +48,7 @@ public final class MusicLibrary {
 
 
     /**
-     * This function helps remove a MusicItem from the library
+     * This method helps remove a MusicItem from the library
      * based on the id.
      *
      * @param id specifies the id of the item to remove
@@ -61,19 +61,27 @@ public final class MusicLibrary {
         }
     }
 
+    /**
+     * This function tells if the library is empty
+     * @return true if the library is empty
+     */
+    public boolean isEmpty() {
+        return items.isEmpty();
+    }
+
 
     /**
      * This method lists all the items contained in the library
      */
     public void listAllItems() {
         for (MusicItem music : items) {
-            System.out.println(music.toString());
+            Message.send(music.toString());
         }
     }
 
 
     /**
-     * This function plays a MusicItem from the library
+     * This method plays a MusicItem from the library
      * based on the id.
      *
      * @param id specifies the id of the item to remove
@@ -89,7 +97,7 @@ public final class MusicLibrary {
 
 
     /**
-     * This function pauses the MusicItem that is currently playing
+     * This method pauses the MusicItem that is currently playing
      */
     public void pauseItem() {
         if(playing != null) {
@@ -99,11 +107,12 @@ public final class MusicLibrary {
 
 
     /**
-     * This function stops the MusicItem that is currently playing
+     * This method stops the MusicItem that is currently playing
      */
     public void stopItem() {
         if(playing != null) {
             playing.stop();
+            playing = null;
         }
     }
 
