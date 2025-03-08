@@ -158,7 +158,7 @@ public final class CommandProcessor {
                                     workingLibrary.addItem(toAdd);          // Adding the new musical item
                                     workingLibrary.save("");     // Saving the library in the default file
 
-                                    Message.send(toAdd.toString() + " added to the library successfully.");
+                                    Message.send(toAdd.getInfo() + " added to the library successfully.");
 
                                 } catch(Exception e) {
                                     Message.send("ADD item " + item + " failed; no such item.");
@@ -202,7 +202,7 @@ public final class CommandProcessor {
                 else {
                     workingLibrary.removeItem(itemId);
 
-                    Message.send("Removed " + toRemove.toString() + " successfully.");
+                    Message.send("Removed " + toRemove.getInfo() + " successfully.");
                 }
 
             } catch (NumberFormatException e) {
@@ -210,6 +210,72 @@ public final class CommandProcessor {
             }
         }
 
+    }
+
+
+
+
+
+    public static void search(String parameters) {
+
+        if(parameters.isEmpty()) {
+            Message.send("Invalid SEARCH command: SEARCH " + parameters);
+            return;
+        }
+        else {
+            String[] words = parameters.split(" ");
+
+            MusicItem searched = null;
+
+            if(words.length == 1) {
+                try {
+                    int id = Integer.parseInt(words[0]);
+
+                    searched = workingLibrary.findItem(id);
+
+                    if(searched == null) {
+                        throw new Exception("No such item found!");
+                    }
+
+                } catch (Exception e) {
+                    Message.send("SEARCH item ID " + words[0] + " failed; no such item.");
+                }
+            }
+            else {
+                String[] attributes = parameters.split(" by ");
+
+                if(attributes.length != 2) {
+                    Message.send("Invalid SEARCH format. Use 'SEARCH <id>' or 'SEARCH <title> by <artist>'");
+                    return;
+                }
+                else {
+                    String title = attributes[0];
+                    String artist = attributes[1];
+
+                    searched = workingLibrary.findByTitleAndArtist(title, artist);
+
+                    if(searched == null) {
+                        Message.send("SEARCH " + title + " by " + artist + " failed; no item found.");
+                        return;
+                    }
+                }
+            }
+
+            if(searched != null) {
+
+                // If there is already an item playing, just print the searched item's info
+                if(workingLibrary.getPlaying() != null) {
+                    Message.send(searched.toString());
+                    return;
+                }
+                else {
+                    workingLibrary.setNextToPlay(searched);
+                    Message.send(searched.getInfo() + " is ready to PLAY.");
+                    return;
+                }
+            }
+
+        }
     }
 
 

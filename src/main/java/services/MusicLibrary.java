@@ -1,6 +1,7 @@
 package services;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 
 import models.MusicItem;
@@ -20,22 +21,69 @@ import ui.Message;
  */
 public final class MusicLibrary {
 
-    private ArrayList<MusicItem> items;     // The data structure to contain all MusicItem elements
-    private MusicItem playing = null;              // Keeps track of the MusicItem currently playing
+    private ArrayList<MusicItem> items;   // The data structure to contain all MusicItem elements
 
-//    public MusicLibrary(ArrayList<MusicItem> items) {
-//
-//    }
+    private MusicItem nextToPlay = null;  // The next item ready to play
+    private MusicItem playing = null;     // Keeps track of the MusicItem currently playing
+
+
+    /**
+     * The getting function for the element currently playing
+     *
+     * @return the music item that is currently playing or null if there is none playing
+     */
+    public MusicItem getPlaying() {
+        return playing;
+    }
+
+
+    /**
+     * The getting function for the next element to play
+     *
+     * @return the music element that was readied and next to play
+     */
+    public MusicItem getNextToPlay() {
+        return nextToPlay;
+    }
+
+    /**
+     * The setting function for the next element to play
+     */
+    public void setNextToPlay(MusicItem nextToPlay) {
+        this.nextToPlay = nextToPlay;
+    }
+
 
     /**
      * A custom function to find an item in the library based on its id
      *
      * @param id an integer that is the id of the searched item
+     * @return the corresponding item or null if no such item is found
      */
     public MusicItem findItem( int id ) {
         for(MusicItem item : items) {
             if(item.getId() == id) {
                 return item;
+            }
+        }
+        return null;    // Returns null if no such item is found
+    }
+
+
+    /**
+     * A custom function that search the first music item with
+     * the title and artist specified.
+     *
+     * @param title specifies the title of the searched item
+     * @param artist specifies the artist of the searched item
+     * @return the corresponding item or null if no such item is found
+     */
+    public MusicItem findByTitleAndArtist(String title, String artist) {
+        for(MusicItem item : items) {
+            if(!(item instanceof Podcast)) {
+                if(item.getTitle().equals(title) && item.getArtist().equals(artist)) {
+                    return item;
+                }
             }
         }
         return null;    // Returns null if no such item is found
@@ -117,8 +165,12 @@ public final class MusicLibrary {
         MusicItem toPlay = findItem(id);
 
         if(toPlay != null) {
-            toPlay.play();
+            if(playing != null) {
+                playing.stop();
+            }
+
             playing = toPlay;
+            toPlay.play();
         }
     }
 
@@ -129,6 +181,7 @@ public final class MusicLibrary {
     public void pauseItem() {
         if(playing != null) {
             playing.pause();
+            playing = null;
         }
     }
 
