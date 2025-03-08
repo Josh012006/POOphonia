@@ -137,6 +137,10 @@ public final class MusicLibrary {
             if(active == toRemove) {
                 active = null;
             }
+
+            if(nextToPlay == toRemove) {
+                nextToPlay = null;
+            }
         }
     }
 
@@ -206,6 +210,7 @@ public final class MusicLibrary {
     public void clearAllItems() {
         items.clear();
         active = null;
+        nextToPlay = null;
     }
 
 

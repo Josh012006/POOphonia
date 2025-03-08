@@ -1,6 +1,5 @@
 package services;
 
-import models.MusicItemFactory;
 import ui.Message;
 import models.MusicItem;
 import models.Song;
@@ -23,12 +22,18 @@ public final class CommandProcessor {
     private static MusicLibrary workingLibrary;
 
 
+
+
+
+
+
+
     /**
      * Loads the music items from the default or the specified library.
      *
      * @param lib specifies the library to load the music items from.
      */
-    private static void load(String lib) {
+    private static void loadCmd(String lib) {
 
         if(lib.isEmpty()) {
             Message.send("Loading from default library file.");
@@ -47,12 +52,14 @@ public final class CommandProcessor {
     }
 
 
+
+
     /**
      * Saves the music items contained in the library to a CSV file.
      *
      * @param file specifies the file we must save the library to.
      */
-    private static void save(String file) {
+    private static void saveCmd(String file) {
 
         if(file.isEmpty()) {
             Message.send("Saving to default library file.");
@@ -66,13 +73,15 @@ public final class CommandProcessor {
     }
 
 
+
+
     /**
      * This method adds a new item to the library while managing
      * all kind of exceptions and cases.
      *
      * @param item specifies the attributes of the new item to add
      */
-    private static void add(String item) {
+    private static void addCmd(String item) {
         String[] parameters = item.split(",");
 
         if(parameters.length < 7) {
@@ -179,13 +188,15 @@ public final class CommandProcessor {
     }
 
 
+
+
     /**
      * This method takes an id and removes the music item with the
      * corresponding id from the library.
      *
      * @param id specifies the id of the item to remove
      */
-    public static void remove(String id) {
+    public static void removeCmd(String id) {
 
         if(id.isEmpty()) {
             Message.send("Invalid REMOVE command: REMOVE " + id);
@@ -215,8 +226,13 @@ public final class CommandProcessor {
 
 
 
-
-    public static void search(String parameters) {
+    /**
+     * This command searches for an element in the library based on the
+     * parameters provided.
+     *
+     * @param parameters specifies the parameters for the search command
+     */
+    public static void searchCmd(String parameters) {
 
         if(parameters.isEmpty()) {
             Message.send("Invalid SEARCH command: SEARCH " + parameters);
@@ -242,10 +258,16 @@ public final class CommandProcessor {
                 }
             }
             else {
+
                 String[] attributes = parameters.split(" by ");
 
-                if(attributes.length != 2) {
+                if(!parameters.contains(" by ") || attributes.length > 2) {
                     Message.send("Invalid SEARCH format. Use 'SEARCH <id>' or 'SEARCH <title> by <artist>'");
+                    return;
+                }
+
+                if(attributes.length != 2) {
+                    Message.send("Invalid SEARCH command: SEARCH " + parameters);
                     return;
                 }
                 else {
@@ -280,12 +302,129 @@ public final class CommandProcessor {
 
 
     /**
+     * This method play the correct element in the library while
+     * managing the possible errors and exceptions.
+     *
+     * @param parameters specifies the parameters for the play command
+     */
+    public static void playCmd(String parameters) {
+
+        MusicItem activeItem = workingLibrary.getActive();
+
+        if(parameters.isEmpty()) {
+
+            if(activeItem != null) {
+                if(activeItem.getIsPlaying()) {
+                    Message.send(activeItem.getInfo() + " is already playing:");
+                }
+                else {
+                    MusicItem nextToPlay = workingLibrary.getNextToPlay();
+
+                    if(nextToPlay == null) {
+                        Message.send("No item to PLAY.");
+                    }
+                    else {
+                        workingLibrary.stopItem();
+
+                        workingLibrary.playItem(nextToPlay.getId());
+                        workingLibrary.setNextToPlay(null);
+
+                        Message.send("Playing " + nextToPlay.getInfo());
+                    }
+                }
+            }
+            else {
+                MusicItem nextToPlay = workingLibrary.getNextToPlay();
+
+                if(nextToPlay == null) {
+                    Message.send("No item to PLAY.");
+                }
+                else {
+
+                    workingLibrary.playItem(nextToPlay.getId());
+                    workingLibrary.setNextToPlay(null);
+
+                    Message.send("Playing " + nextToPlay.getInfo());
+                }
+            }
+            return;
+        }
+        else {
+            String[] words = parameters.split(" ");
+
+            MusicItem toPlay = null;
+
+            if(words.length == 1) {
+                try {
+                    int id = Integer.parseInt(words[0]);
+
+                    toPlay = workingLibrary.findItem(id);
+
+                    if(toPlay == null) {
+                        Message.send("PLAY item ID " + id + " failed; no such item.");
+                        return;
+                    }
+
+                } catch (Exception e) {
+                    Message.send("Invalid ID for PLAY command: " + words[0]);
+                }
+            }
+            else {
+
+                String[] attributes = parameters.split(" by ");
+
+                if(!parameters.contains(" by ") || attributes.length > 2) {
+                    Message.send("Invalid PLAY format. Use 'PLAY', 'PLAY <id>' or 'PLAY <title> by <artist>'");
+                    return;
+                }
+
+                if(attributes.length != 2) {
+                    Message.send("Invalid PLAY command: PLAY " + parameters);
+                    return;
+                }
+                else {
+                    String title = attributes[0];
+                    String artist = attributes[1];
+
+                    toPlay = workingLibrary.findByTitleAndArtist(title, artist);
+
+                    if(toPlay == null) {
+                        Message.send("PLAY item: " + title + " by " + artist + " failed; no such item.");
+                        return;
+                    }
+                }
+            }
+
+            if(toPlay != null) {
+                if(activeItem == toPlay && activeItem.getIsPlaying()) {
+                    Message.send(toPlay.getInfo() + " is already playing.");
+                }
+                else {
+                    if(activeItem != null) {
+                        workingLibrary.stopItem();
+                    }
+
+                    workingLibrary.playItem(toPlay.getId());
+
+                    Message.send("Playing " + toPlay.getInfo());
+                }
+
+                return;
+            }
+        }
+
+    }
+
+
+
+
+    /**
      * This function manages the pause command. It helps pause the item currently playing
      * in the library all of that while also taking care of eventual exceptions.
      *
      * @param parameters specifies the parameters of the command. Normally there is none
      */
-    private static void pause(String parameters) {
+    private static void pauseCmd(String parameters) {
 
         // Verifying if the command is valid
         if(!parameters.isEmpty()) {
@@ -318,11 +457,38 @@ public final class CommandProcessor {
 
 
     /**
+     * This method executes the STOp command to stop the
+     * element currently playing in the library while managing the possible exceptions.
+     *
+     * @param parameters specifies the parameters of the STOP command. Normally there are none.
+     */
+    public static void stopCmd(String parameters) {
+        if(!parameters.isEmpty()) {
+            Message.send("Invalid STOP command: STOP " + parameters);
+        }
+        else {
+            MusicItem toStop = workingLibrary.getActive();
+            if(toStop == null) {
+                Message.send("No item to STOP.");
+                return;
+            }
+            else {
+                workingLibrary.stopItem();
+                Message.send("Stopping " + toStop.getInfo());
+                return;
+            }
+        }
+    }
+
+
+
+
+    /**
      * This method removes all the items from the library.
      *
      * @param parameters specifies the parameters for the command
      */
-    private static void clear(String parameters) {
+    private static void clearCmd(String parameters) {
 
         // Verifying if the command is valid
         if(!parameters.isEmpty()) {
@@ -341,12 +507,13 @@ public final class CommandProcessor {
 
 
 
+
     /**
      * This method lists all the music items of the library.
      *
      * @param parameters specifies the parameters for the command
      */
-    private static void list(String parameters) {
+    private static void listCmd(String parameters) {
 
         // Verifying if the command is valid
         if(!parameters.isEmpty()) {
@@ -364,13 +531,15 @@ public final class CommandProcessor {
     }
 
 
+
+
     /**
      * The method that manages the source command. It reads the file
      * and executes the commands that it contains.
      *
      * @param fileName indicates the file to read.
      */
-    private static void source(String fileName) {
+    private static void sourceCmd(String fileName) {
 
         // Default file path where the commands are stored.
         final String DEFAULT_FILE = "commands";
@@ -415,37 +584,37 @@ public final class CommandProcessor {
 
                         switch(words[0]) {
                             case "SOURCE":
-                                source(parameters);
+                                sourceCmd(parameters);
                                 break;
                             case "LOAD":
-                                load(parameters);
+                                loadCmd(parameters);
                                 break;
                             case "SAVE":
-                                save(parameters);
+                                saveCmd(parameters);
                                 break;
                             case "ADD":
-                                add(parameters);
+                                addCmd(parameters);
                                 break;
                             case "REMOVE":
-                                remove(parameters);
+                                removeCmd(parameters);
                                 break;
                             case "SEARCH":
-                                search(parameters);
+                                searchCmd(parameters);
                                 break;
                             case "PLAY":
-                                play(parameters);
+                                playCmd(parameters);
                                 break;
                             case "PAUSE":
-                                pause(parameters);
+                                pauseCmd(parameters);
                                 break;
                             case "STOP":
-                                stop(parameters);
+                                stopCmd(parameters);
                                 break;
                             case "CLEAR":
-                                clear(parameters);
+                                clearCmd(parameters);
                                 break;
                             case "LIST":
-                                list(parameters);
+                                listCmd(parameters);
                                 break;
                             case "EXIT":
                                 break;
@@ -467,14 +636,22 @@ public final class CommandProcessor {
     }
 
 
+    /**
+     * This is the main function of the class. It helps execute all the commands
+     * from the command file on the specified library. By default, the command file
+     * is data/commands.txt.
+     *
+     * @param library specifies the MusicLibrary to apply the commands to.
+     */
     public static void processCommands( MusicLibrary library ) {
 
-        // Assign the working library for the commands' methods' work to be
-        // easier.
+        // Assign the working library
         workingLibrary = library;
 
-        // We read the commands from the default file commands.txt
-        source("");
+        if(workingLibrary != null) {
+            // We read and execute the commands from the default file commands.txt
+            sourceCmd("");
+        }
 
     }
 }
