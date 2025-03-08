@@ -15,7 +15,7 @@ import java.util.Arrays;
 
 public final class CommandProcessor {
 
-    // A stack that keeps track of the sourcing files
+    // A list that keeps track of the sourcing files
     private static ArrayList<String> sourcing = new ArrayList<String>();
 
     // The library the command processor is currently working on
@@ -544,6 +544,7 @@ public final class CommandProcessor {
      */
     private static void sourceCmd(String fileName) {
 
+        // Initial verification to see if the program must continue or stop
         if(mustExit) {
             return;
         }
@@ -645,7 +646,7 @@ public final class CommandProcessor {
                 Message.send( "Error reading command file: " + fileName );
             }
 
-            // Clean the sourcing stack
+            // Clean the sourcing list
             sourcing.remove( fileName );
 
 
