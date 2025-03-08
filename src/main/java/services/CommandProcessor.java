@@ -21,6 +21,9 @@ public final class CommandProcessor {
     // The library the command processor is currently working on
     private static MusicLibrary workingLibrary;
 
+    // A process necessary for exiting the program
+    private static boolean mustExit = false;
+
 
 
 
@@ -541,6 +544,10 @@ public final class CommandProcessor {
      */
     private static void sourceCmd(String fileName) {
 
+        if(mustExit) {
+            return;
+        }
+
         // Default file path where the commands are stored.
         final String DEFAULT_FILE = "commands";
 
@@ -617,6 +624,16 @@ public final class CommandProcessor {
                                 listCmd(parameters);
                                 break;
                             case "EXIT":
+
+                                if(!parameters.isEmpty()) {
+                                    Message.send("Invalid EXIT command: " + line);
+                                }
+                                else {
+                                    mustExit = true;
+                                    Message.send("Exiting program...");
+                                    return;
+                                }
+
                                 break;
                             default:
                                 Message.send( "Unknown command " + line );
@@ -631,6 +648,7 @@ public final class CommandProcessor {
             // Clean the sourcing stack
             sourcing.remove( fileName );
 
+
         }
 
     }
@@ -644,6 +662,9 @@ public final class CommandProcessor {
      * @param library specifies the MusicLibrary to apply the commands to.
      */
     public static void processCommands( MusicLibrary library ) {
+
+        // Reinitialize the mustExit variable before any new process of commands
+        mustExit = false;
 
         // Assign the working library
         workingLibrary = library;
