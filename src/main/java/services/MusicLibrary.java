@@ -24,7 +24,7 @@ public final class MusicLibrary {
     private ArrayList<MusicItem> items;   // The data structure to contain all MusicItem elements
 
     private MusicItem nextToPlay = null;  // The next item ready to play
-    private MusicItem playing = null;     // Keeps track of the MusicItem currently playing
+    private MusicItem active = null;      // Keeps track of the MusicItem currently playing or paused
 
 
     /**
@@ -32,8 +32,8 @@ public final class MusicLibrary {
      *
      * @return the music item that is currently playing or null if there is none playing
      */
-    public MusicItem getPlaying() {
-        return playing;
+    public MusicItem getActive() {
+        return active;
     }
 
 
@@ -133,6 +133,10 @@ public final class MusicLibrary {
 
         if(toRemove != null) {
             items.remove(toRemove);
+
+            if(active == toRemove) {
+                active = null;
+            }
         }
     }
 
@@ -165,11 +169,11 @@ public final class MusicLibrary {
         MusicItem toPlay = findItem(id);
 
         if(toPlay != null) {
-            if(playing != null) {
-                playing.stop();
+            if(active != null) {
+                active.stop();
             }
 
-            playing = toPlay;
+            active = toPlay;
             toPlay.play();
         }
     }
@@ -179,9 +183,8 @@ public final class MusicLibrary {
      * This method pauses the MusicItem that is currently playing
      */
     public void pauseItem() {
-        if(playing != null) {
-            playing.pause();
-            playing = null;
+        if(active != null) {
+            active.pause();
         }
     }
 
@@ -190,9 +193,9 @@ public final class MusicLibrary {
      * This method stops the MusicItem that is currently playing
      */
     public void stopItem() {
-        if(playing != null) {
-            playing.stop();
-            playing = null;
+        if(active != null) {
+            active.stop();
+            active = null;
         }
     }
 
@@ -202,6 +205,7 @@ public final class MusicLibrary {
      */
     public void clearAllItems() {
         items.clear();
+        active = null;
     }
 
 

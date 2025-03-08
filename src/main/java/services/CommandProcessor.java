@@ -264,7 +264,7 @@ public final class CommandProcessor {
             if(searched != null) {
 
                 // If there is already an item playing, just print the searched item's info
-                if(workingLibrary.getPlaying() != null) {
+                if(workingLibrary.getActive() != null && workingLibrary.getActive().getIsPlaying()) {
                     Message.send(searched.toString());
                     return;
                 }
@@ -279,16 +279,42 @@ public final class CommandProcessor {
     }
 
 
-
+    /**
+     * This function manages the pause command. It helps pause the item currently playing
+     * in the library all of that while also taking care of eventual exceptions.
+     *
+     * @param parameters specifies the parameters of the command. Normally there is none
+     */
     private static void pause(String parameters) {
 
         // Verifying if the command is valid
         if(!parameters.isEmpty()) {
             Message.send("Invalid PAUSE command: PAUSE " + parameters);
         }
-        workingLibrary.pauseItem();
+        else {
+
+            MusicItem toPause = workingLibrary.getActive();
+
+            if(toPause == null) {
+                Message.send("No item to PAUSE.");
+                return;
+            }
+            else {
+                if(!toPause.getIsPlaying()) {
+                    Message.send(toPause.getInfo() + "; is already on pause.");
+                    return;
+                }
+                else {
+                    workingLibrary.pauseItem();
+                    Message.send("Pausing " + toPause.getInfo());
+                    return;
+                }
+            }
+        }
 
     }
+
+
 
 
     /**
