@@ -27,6 +27,13 @@ public final class MusicLibrary {
     private MusicItem active = null;      // Keeps track of the MusicItem currently playing or paused
 
 
+
+
+
+
+
+
+
     /**
      * The getting function for the element currently playing
      *
@@ -35,6 +42,8 @@ public final class MusicLibrary {
     public MusicItem getActive() {
         return active;
     }
+
+
 
 
     /**
@@ -54,6 +63,15 @@ public final class MusicLibrary {
     }
 
 
+
+
+
+
+
+
+
+
+
     /**
      * A custom function to find an item in the library based on its id
      *
@@ -68,6 +86,8 @@ public final class MusicLibrary {
         }
         return null;    // Returns null if no such item is found
     }
+
+
 
 
     /**
@@ -88,6 +108,8 @@ public final class MusicLibrary {
         }
         return null;    // Returns null if no such item is found
     }
+
+
 
 
     /**
@@ -112,6 +134,8 @@ public final class MusicLibrary {
     }
 
 
+
+
     /**
      * Used to add an item to the library
      *
@@ -120,6 +144,8 @@ public final class MusicLibrary {
     public void addItem( MusicItem item) {
         items.add(item);
     }
+
+
 
 
     /**
@@ -144,6 +170,9 @@ public final class MusicLibrary {
         }
     }
 
+
+
+
     /**
      * This function tells if the library is empty
      * @return true if the library is empty
@@ -151,6 +180,8 @@ public final class MusicLibrary {
     public boolean isEmpty() {
         return items.isEmpty();
     }
+
+
 
 
     /**
@@ -161,6 +192,8 @@ public final class MusicLibrary {
             Message.send(music.toString());
         }
     }
+
+
 
 
     /**
@@ -183,6 +216,8 @@ public final class MusicLibrary {
     }
 
 
+
+
     /**
      * This method pauses the MusicItem that is currently playing
      */
@@ -191,6 +226,8 @@ public final class MusicLibrary {
             active.pause();
         }
     }
+
+
 
 
     /**
@@ -204,6 +241,8 @@ public final class MusicLibrary {
     }
 
 
+
+
     /**
      * This method clears all the items in the library
      */
@@ -212,6 +251,8 @@ public final class MusicLibrary {
         active = null;
         nextToPlay = null;
     }
+
+
 
 
     /**
