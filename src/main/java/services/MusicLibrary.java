@@ -15,7 +15,8 @@ import ui.Message;
  * This class defines the components and the features
  * of the library. It is used to manage MusicItems.
  *
- * @author Josué Mongan
+ * @author Josué Mongan (20290870)
+ * @author Kuza Twagiramungu (20317467)
  * @since 2025-03-06
  *
  */

@@ -13,10 +13,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+
+
+
+/**
+ * This class processes the commands from the
+ * command file and execute them on the MusicLibrary item specified
+ *
+ * @author Josué Mongan (20290870)
+ * @author Kuza Twagiramungu (20317467)
+ * @since 2025-03-06
+ *
+ */
 public final class CommandProcessor {
 
     // A list that keeps track of the sourcing files
-    private static ArrayList<String> sourcing = new ArrayList<String>();
+    private static final ArrayList<String> sourcing = new ArrayList<String>();
 
     // The library the command processor is currently working on
     private static MusicLibrary workingLibrary;
@@ -587,6 +599,11 @@ public final class CommandProcessor {
             try( BufferedReader reader = new BufferedReader( new FileReader( filePath ) ) ) {
                 String line;
                 while( ( line = reader.readLine() ) != null ) {
+
+                    // Verification to see if the program must continue executing
+                    if(mustExit) {
+                        return;
+                    }
 
                     if(line.isBlank() || line.charAt(0) == '#') {
                         continue;

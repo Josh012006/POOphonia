@@ -1,6 +1,19 @@
 package models;
 
 
+
+
+
+
+/**
+ * This class defines the features of a Song element. It inherits from
+ * the MusicItem class.
+ *
+ * @author Josué Mongan (20290870)
+ * @author Kuza Twagiramungu (20317467)
+ * @since 2025-03-08
+ *
+ */
 public final class Song extends MusicItem {
 
     private String artist;
@@ -8,26 +21,53 @@ public final class Song extends MusicItem {
     private int duration;
 
 
+
+
+
+    /**
+     * The getting function for the artist
+     *
+     * @return the artist of the song
+     */
     public String getArtist() {
         return this.artist;
     }
 
+    /**
+     * The function sets the song's artist
+     */
     public void setArtist(String artist) {
         this.artist = artist;
     }
 
+    /**
+     * The getting function for the genre
+     *
+     * @return the genre of the song
+     */
     public String getGenre() {
         return this.genre;
     }
 
+    /**
+     * The function sets the song's genre
+     */
     public void setGenre(String genre) {
         this.genre = genre;
     }
 
+    /**
+     * The getting function for the duration
+     *
+     * @return the duration of the song
+     */
     public int getDuration() {
         return this.duration;
     }
 
+    /**
+     * The function sets the song's duration
+     */
     public void setDuration(int duration) {
         this.duration = duration;
     }
@@ -35,6 +75,22 @@ public final class Song extends MusicItem {
 
 
 
+
+
+
+
+
+    /**
+     * A constructor for the song. This one takes directly the
+     * song's attributes as parameters.
+     *
+     * @param id specifies the new song's id
+     * @param title specifies the new song's title
+     * @param releaseYear specifies the new song's releaseYear
+     * @param artist specifies the new song's artist
+     * @param genre specifies the new song's genre
+     * @param duration specifies the new song's duration
+     */
     public Song(int id, String title, int releaseYear, String artist, String genre, int duration) {
         super(id, title, releaseYear);
 
@@ -43,6 +99,12 @@ public final class Song extends MusicItem {
         this.duration = duration;
     }
 
+    /**
+     * A constructor for the song element. This one takes the attributes
+     * as a bunch in an array.
+     *
+     * @param parts is an array containing all the information about the song
+     */
     public Song(String[] parts) {
         super(Integer.parseInt(parts[1]), parts[2], Integer.parseInt(parts[3]));
 
@@ -50,6 +112,11 @@ public final class Song extends MusicItem {
         this.genre = parts[5];
         this.duration = Integer.parseInt(parts[6]);
     }
+
+
+
+
+
 
 
     @Override
