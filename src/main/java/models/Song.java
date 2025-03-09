@@ -43,6 +43,14 @@ public final class Song extends MusicItem {
         this.duration = duration;
     }
 
+    public Song(String[] parts) {
+        super(Integer.parseInt(parts[1]), parts[2], Integer.parseInt(parts[3]));
+
+        this.artist = parts[4];
+        this.genre = parts[5];
+        this.duration = Integer.parseInt(parts[6]);
+    }
+
 
     @Override
     public String toString() {

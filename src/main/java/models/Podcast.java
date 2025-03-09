@@ -1,9 +1,6 @@
 package models;
 
 
-package models;
-
-
 public final class Podcast extends MusicItem {
 
     private String host;
@@ -43,6 +40,14 @@ public final class Podcast extends MusicItem {
         this.host = host;
         this.episodeNumber = episodeNumber;
         this.topic = topic;
+    }
+
+    public Podcast(String[] parts) {
+        super(Integer.parseInt(parts[1]), parts[2], Integer.parseInt(parts[3]));
+
+        this.host = parts[4];
+        this.episodeNumber = Integer.parseInt(parts[6]);
+        this.topic = parts[5];
     }
 
 

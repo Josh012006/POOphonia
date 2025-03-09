@@ -42,6 +42,14 @@ public final class Album extends MusicItem {
         this.label = label;
     }
 
+    public Album(String[] parts) {
+        super(Integer.parseInt(parts[1]), parts[2], Integer.parseInt(parts[3]));
+
+        this.artist = parts[4];
+        this.numberOfTracks = Integer.parseInt(parts[6]);
+        this.label = parts[5];
+    }
+
 
     @Override
     public String toString() {

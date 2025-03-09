@@ -6,10 +6,10 @@ package models;
 
 public abstract class MusicItem {
 
-    private int id;
-    private String title;
-    private int releaseYear;
-    private boolean isPlaying;
+    protected int id;
+    protected String title;
+    protected int releaseYear;
+    protected boolean isPlaying;
 
 
     public int getId() {

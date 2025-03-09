@@ -101,8 +101,22 @@ public final class MusicLibrary {
     public MusicItem findByTitleAndArtist(String title, String artist) {
         for(MusicItem item : items) {
             if(!(item instanceof Podcast)) {
-                if(item.getTitle().equals(title) && item.getArtist().equals(artist)) {
-                    return item;
+
+                if(item instanceof Song) {
+                    Song myItem = (Song) item;
+
+                    if(myItem.getTitle().equals(title) && myItem.getArtist().equals(artist)) {
+                        return item;
+                    }
+                }
+
+
+                if(item instanceof Album) {
+                    Album myItem = (Album) item;
+
+                    if(myItem.getTitle().equals(title) && myItem.getArtist().equals(artist)) {
+                        return item;
+                    }
                 }
             }
         }
@@ -122,12 +136,16 @@ public final class MusicLibrary {
     public boolean existingItem( MusicItem item) {
         for(MusicItem music : items) {
 
-            MusicItem tempCopy = music.clone();
-            tempCopy.setId(item.getId());       // Giving the same id in other to compare the two independently of the id
+            int initialId = music.getId();
 
-            if(tempCopy.toString().equals(item.toString())) {
+            music.setId(item.getId());       // Giving the same id in other to compare the two independently of the id
+
+            if(music.toString().equals(item.toString())) {
+                music.setId(initialId);
                 return true;
             }
+
+            music.setId(initialId);
         }
 
         return false;

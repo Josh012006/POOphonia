@@ -35,7 +35,7 @@ public class MusicLibraryFileHandler {
      * Save a list of MusicItem objects to a CSV file.
      * 
      * @param items The list of music items to be saved.
-     * @param filePath The name of the file (without extension). If empty, the default file is used.
+     * @param libraryName The name of the file (without extension). If empty, the default file is used.
     */
     public static void saveLibrary( List<MusicItem> items, String libraryName ) {
 	// If no filePath is specified, use the default CSV file
@@ -57,7 +57,7 @@ public class MusicLibraryFileHandler {
     /**
      * Load a list of music items from a CSV file.
      * 
-     * @param filePath The name of the file (without extension). If empty, the default file is used.
+     * @param libraryName The name of the file (without extension). If empty, the default file is used.
      * @return A list of MusicItem instances loaded from the file.
     */
     public static List<MusicItem> loadLibrary( String libraryName ) {

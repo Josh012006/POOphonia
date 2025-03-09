@@ -46,7 +46,7 @@ public final class CommandProcessor {
         }
 
         // Load the music items from the library
-        ArrayList<MusicItem> loaded = MusicLibraryFileHandler.loadLibrary(lib);
+        ArrayList<MusicItem> loaded = (ArrayList<MusicItem>) MusicLibraryFileHandler.loadLibrary(lib);
 
         for(MusicItem item : loaded) {
             workingLibrary.addItem(item);
@@ -147,7 +147,7 @@ public final class CommandProcessor {
                                         }
 
                                         toAdd = new Album(itemId, parameters[2], itemReleaseYear,
-                                                parameters[4], parameters[5], numOfTracks);
+                                                parameters[4], numOfTracks, parameters[5]);
                                     }
                                     else {
                                         int numOfPodcasts = Integer.parseInt(parameters[6]);
@@ -158,7 +158,7 @@ public final class CommandProcessor {
                                         }
 
                                         toAdd = new Podcast(itemId, parameters[2], itemReleaseYear,
-                                                parameters[4], parameters[5], numOfPodcasts);
+                                                parameters[4], numOfPodcasts, parameters[5]);
                                     }
 
 
@@ -208,7 +208,7 @@ public final class CommandProcessor {
             try {
                 int itemId =  Integer.parseInt(id);
 
-                MusicItem toRemove = MusicItem.findItem(itemId);
+                MusicItem toRemove = workingLibrary.findItem(itemId);
 
                 if(toRemove == null) {
                     Message.send("REMOVE item " + id + " failed; no such item.");
