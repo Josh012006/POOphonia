@@ -168,9 +168,10 @@ public final class CommandProcessor {
                                     }
 
                                     workingLibrary.addItem(toAdd);          // Adding the new musical item
-                                    workingLibrary.save("");     // Saving the library in the default file
 
                                     Message.send(toAdd.getInfo() + " added to the library successfully.");
+
+                                    workingLibrary.save("");     // Saving the library in the default file
 
                                 } catch(Exception e) {
                                     Message.send("ADD item " + item + " failed; no such item.");
@@ -217,6 +218,8 @@ public final class CommandProcessor {
                     workingLibrary.removeItem(itemId);
 
                     Message.send("Removed " + toRemove.getInfo() + " successfully.");
+
+                    workingLibrary.save("");     // Saving the library in the default file
                 }
 
             } catch (NumberFormatException e) {
@@ -257,7 +260,7 @@ public final class CommandProcessor {
                     }
 
                 } catch (Exception e) {
-                    Message.send("SEARCH item ID " + words[0] + " failed; no such item.");
+                    Message.send("SEARCH item ID " + words[0] + " failed; no such item");
                 }
             }
             else {
@@ -295,7 +298,7 @@ public final class CommandProcessor {
                 }
                 else {
                     workingLibrary.setNextToPlay(searched);
-                    Message.send(searched.getInfo() + " is ready to PLAY.");
+                    Message.send(searched.getInfo() + " is ready to PLAY");
                     return;
                 }
             }
@@ -318,7 +321,7 @@ public final class CommandProcessor {
 
             if(activeItem != null) {
                 if(activeItem.getIsPlaying()) {
-                    Message.send(activeItem.getInfo() + " is already playing:");
+                    Message.send(activeItem.getInfo() + " is already playing.");
                 }
                 else {
                     MusicItem nextToPlay = workingLibrary.getNextToPlay();
@@ -327,12 +330,14 @@ public final class CommandProcessor {
                         Message.send("No item to PLAY.");
                     }
                     else {
+
                         workingLibrary.stopItem();
+                        Message.send("Stopping " + activeItem.getInfo() + ".");
 
                         workingLibrary.playItem(nextToPlay.getId());
                         workingLibrary.setNextToPlay(null);
 
-                        Message.send("Playing " + nextToPlay.getInfo());
+                        Message.send("Playing " + nextToPlay.getInfo() + ".");
                     }
                 }
             }
@@ -347,7 +352,7 @@ public final class CommandProcessor {
                     workingLibrary.playItem(nextToPlay.getId());
                     workingLibrary.setNextToPlay(null);
 
-                    Message.send("Playing " + nextToPlay.getInfo());
+                    Message.send("Playing " + nextToPlay.getInfo() + ".");
                 }
             }
             return;
@@ -405,11 +410,12 @@ public final class CommandProcessor {
                 else {
                     if(activeItem != null) {
                         workingLibrary.stopItem();
+                        Message.send("Stopping " + activeItem.getInfo() + ".");
                     }
 
                     workingLibrary.playItem(toPlay.getId());
 
-                    Message.send("Playing " + toPlay.getInfo());
+                    Message.send("Playing " + toPlay.getInfo() + ".");
                 }
 
                 return;
@@ -448,7 +454,7 @@ public final class CommandProcessor {
                 }
                 else {
                     workingLibrary.pauseItem();
-                    Message.send("Pausing " + toPause.getInfo());
+                    Message.send("Pausing " + toPause.getInfo() + ".");
                     return;
                 }
             }
@@ -477,7 +483,7 @@ public final class CommandProcessor {
             }
             else {
                 workingLibrary.stopItem();
-                Message.send("Stopping " + toStop.getInfo());
+                Message.send("Stopping " + toStop.getInfo() + ".");
                 return;
             }
         }
@@ -504,6 +510,8 @@ public final class CommandProcessor {
         else {
             workingLibrary.clearAllItems();
             Message.send("Music library has been cleared successfully.");
+
+            workingLibrary.save("");     // Saving the library in the default file
         }
 
     }
@@ -580,7 +588,7 @@ public final class CommandProcessor {
                 String line;
                 while( ( line = reader.readLine() ) != null ) {
 
-                    if(line.charAt(0) == '#' || line.isBlank()) {
+                    if(line.isBlank() || line.charAt(0) == '#') {
                         continue;
                     }
                     else {
@@ -673,6 +681,10 @@ public final class CommandProcessor {
         if(workingLibrary != null) {
             // We read and execute the commands from the default file commands.txt
             sourceCmd("");
+        }
+
+        if(!mustExit) {
+            Message.send("Exiting program...");
         }
 
     }

@@ -21,7 +21,7 @@ import ui.Message;
  */
 public final class MusicLibrary {
 
-    private ArrayList<MusicItem> items;   // The data structure to contain all MusicItem elements
+    private ArrayList<MusicItem> items = new ArrayList<>();   // The data structure to contain all MusicItem elements
 
     private MusicItem nextToPlay = null;  // The next item ready to play
     private MusicItem active = null;      // Keeps track of the MusicItem currently playing or paused
@@ -100,25 +100,33 @@ public final class MusicLibrary {
      */
     public MusicItem findByTitleAndArtist(String title, String artist) {
         for(MusicItem item : items) {
-            if(!(item instanceof Podcast)) {
 
-                if(item instanceof Song) {
-                    Song myItem = (Song) item;
+            if(item instanceof Song) {
+                Song myItem = (Song) item;
 
-                    if(myItem.getTitle().equals(title) && myItem.getArtist().equals(artist)) {
-                        return item;
-                    }
-                }
-
-
-                if(item instanceof Album) {
-                    Album myItem = (Album) item;
-
-                    if(myItem.getTitle().equals(title) && myItem.getArtist().equals(artist)) {
-                        return item;
-                    }
+                if(myItem.getTitle().equals(title) && myItem.getArtist().equals(artist)) {
+                    return item;
                 }
             }
+
+
+            if(item instanceof Album) {
+                Album myItem = (Album) item;
+
+                if(myItem.getTitle().equals(title) && myItem.getArtist().equals(artist)) {
+                    return item;
+                }
+            }
+
+
+            if(item instanceof Podcast) {
+                Podcast myItem = (Podcast) item;
+
+                if(myItem.getTitle().equals(title) && myItem.getHost().equals(artist)) {
+                    return item;
+                }
+            }
+
         }
         return null;    // Returns null if no such item is found
     }
