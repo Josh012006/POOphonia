@@ -24,6 +24,7 @@ import java.util.Arrays;
  * @author Kuza Twagiramungu (20317467)
  * @since 2025-03-06
  *
+ * © 2025 POOphonia. All rights reserved.
  */
 public final class CommandProcessor {
 

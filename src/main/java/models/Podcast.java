@@ -12,6 +12,7 @@ package models;
  * @author Kuza Twagiramungu (20317467)
  * @since 2025-03-08
  *
+ * © 2025 POOphonia. All rights reserved.
  */
 public final class Podcast extends MusicItem {
 
