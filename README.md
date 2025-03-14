@@ -41,6 +41,13 @@ stdout.
 Les contributions sont les bienvenues.
 Veuillez soumettre une pull request ou ouvrir une issue pour discuter des améliorations potentielles au projet.
 
+## Auteurs
+
+- **Josué Mongan**  
+  GitHub : [Josh012006](https://github.com/Josh012006)
+- **Kuzatw**  
+  GitHub : [kuzatw](https://github.com/kuzatw)
+
 ## Licence
 
 Ce projet est sous licence propriétaire.
